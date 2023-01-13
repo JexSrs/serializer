@@ -1,14 +1,3 @@
-if (!Object.entries)
-    Object.entries = function( obj ){
-        var ownProps = Object.keys( obj ),
-            i = ownProps.length,
-            resArray = new Array(i); // preallocate the Array
-
-        while (i--)
-            resArray[i] = [ownProps[i], obj[ownProps[i]]];
-        return resArray;
-    };
-
 class Serializer {
     declare types: any[];
 
@@ -33,7 +22,7 @@ class Serializer {
 
         return {
             index,
-            entries: Object.entries(object).map(([key, value]) => ([key, this._serialize(value)]))
+            entries: Serializer.entries(object).map(([key, value]) => ([key, this._serialize(value)]))
         };
     }
 
@@ -44,6 +33,15 @@ class Serializer {
         data.entries.map((entry: any) => obj[entry[0]] = this._deserialize(entry[1]));
         return obj;
     }
+
+    private static entries(obj: object) {
+        var ownProps = Object.keys(obj),
+            i = ownProps.length,
+            resArray = new Array(i); // preallocate the Array
+        while (i--)
+            resArray[i] = [ownProps[i], obj[ownProps[i]]];
+        return resArray;
+    };
 }
 
 export default Serializer;
